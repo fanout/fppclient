@@ -7,6 +7,7 @@ if(typeof(console) === "undefined")
 }
 
 var FO = FO || {};
+var Fpp = Fpp || {};
 
 var fo_jsonp_callback_id = 0;
 var fo_jsonp_callbacks = {};
@@ -204,9 +205,9 @@ FO.Request.prototype._error = function(reason)
 		this.onError(reason);
 }
 
-FO.Connection = function(baseUrl, config)
+Fpp.Client = function(baseUrl, config)
 {
-	if(!(this instanceof FO.Connection))
+	if(!(this instanceof Fpp.Client))
 		throw new Error("Constructor called as a function");
 
 	if(baseUrl != undefined) {
@@ -239,12 +240,12 @@ FO.Connection = function(baseUrl, config)
 	this._cb_new_session = null;
 }
 
-FO.Connection.prototype.setAuthToken = function(token)
+Fpp.Client.prototype.setAuthToken = function(token)
 {
 	this._auth_token = token;
 }
 
-FO.Connection.prototype.Channel = function(channel)
+Fpp.Client.prototype.Channel = function(channel)
 {
 	if(!this._subs[channel])
 	{
@@ -267,7 +268,7 @@ FO.Connection.prototype.Channel = function(channel)
 	return c;
 }
 
-FO.Connection.prototype._channel_on = function(channel, event, callback)
+Fpp.Client.prototype._channel_on = function(channel, event, callback)
 {
 	var sub = this._subs[channel];
 	if(!sub)
@@ -279,25 +280,25 @@ FO.Connection.prototype._channel_on = function(channel, event, callback)
 		sub.cb_data = callback
 }
 
-FO.Connection.prototype._channel_cancel = function(channel)
+Fpp.Client.prototype._channel_cancel = function(channel)
 {
 	delete this._subs[channel];
 	this._resub_queued();
 }
 
-FO.Connection.prototype.on = function(event, callback)
+Fpp.Client.prototype.on = function(event, callback)
 {
 	if(event == "new-session")
 		this._cb_new_session = callback;
 }
 
-FO.Connection.prototype.reconnect = function()
+Fpp.Client.prototype.reconnect = function()
 {
 	this._resub();
 }
 
 // gets state and leaves the connection active
-FO.Connection.prototype.getState = function()
+Fpp.Client.prototype.getState = function()
 {
 	var state = { sid: this._sid };
 
@@ -320,14 +321,14 @@ FO.Connection.prototype.getState = function()
 }
 
 // gets state and ends the connection
-FO.Connection.prototype.takeState = function()
+Fpp.Client.prototype.takeState = function()
 {
 	this._cancel();
 
 	return this.getState();
 }
 
-FO.Connection.prototype.setState = function(state)
+Fpp.Client.prototype.setState = function(state)
 {
 	this._cancel();
 
@@ -378,12 +379,12 @@ FO.Connection.prototype.setState = function(state)
 		this._resub();
 }
 
-FO.Connection.prototype.setSessionId = function(sid)
+Fpp.Client.prototype.setSessionId = function(sid)
 {
 	this._sid = sid;
 }
 
-FO.Connection.prototype._subsCount = function()
+Fpp.Client.prototype._subsCount = function()
 {
 	var count = 0;
 	for(var key in this._subs)
@@ -395,7 +396,7 @@ FO.Connection.prototype._subsCount = function()
 }
 
 // cancel any active requests/timers
-FO.Connection.prototype._cancel = function()
+Fpp.Client.prototype._cancel = function()
 {
 	// cancel pending request
 	if(this._req)
@@ -414,7 +415,7 @@ FO.Connection.prototype._cancel = function()
 	this._need_resub = false;
 }
 
-FO.Connection.prototype._resub_queued = function()
+Fpp.Client.prototype._resub_queued = function()
 {
 	if(!this._need_resub)
 	{
@@ -425,7 +426,7 @@ FO.Connection.prototype._resub_queued = function()
 	}
 }
 
-FO.Connection.prototype._resub = function()
+Fpp.Client.prototype._resub = function()
 {
 	this._cancel();
 
@@ -628,7 +629,7 @@ FO.Connection.prototype._resub = function()
 	this._req.start("POST", uri, headers, params);
 }
 
-FO.Connection.prototype._get_updates = function()
+Fpp.Client.prototype._get_updates = function()
 {
 	var param_list = new Array();
 
@@ -811,7 +812,7 @@ FO.Connection.prototype._get_updates = function()
 	this._req.start("GET", uri, null, null);
 }
 
-FO.Connection.prototype._retry = function()
+Fpp.Client.prototype._retry = function()
 {
 	if(this._retries === 0)
 		this._retry_time = 1;
