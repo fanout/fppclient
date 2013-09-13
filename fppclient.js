@@ -624,7 +624,7 @@ Fpp.Client.prototype._resub = function()
 
 	var headers = {};
 	headers["Content-Type"] = "application/x-www-form-urlencoded";
-	headers["Content-Length"] = params.length;
+	headers["Content-Length"] = "" + params.length;
 
 	this._req.start("POST", uri, headers, params);
 }
