@@ -80,11 +80,11 @@ FO.Request.prototype.start = function(method, url, headers, body)
 
 		param_list.push("callback=" + encodeURIComponent("fo_jsonp_get_callback(\"" + this._cb_id + "\")"));
 		if(method != "GET")
-			param_list.push("method=" + encodeURIComponent(method));
+			param_list.push("_method=" + encodeURIComponent(method));
 		if(headers)
-			param_list.push("headers=" + encodeURIComponent(JSON.stringify(headers)));
+			param_list.push("_headers=" + encodeURIComponent(JSON.stringify(headers)));
 		if(body)
-			param_list.push("body=" + encodeURIComponent(body));
+			param_list.push("_body=" + encodeURIComponent(body));
 
 		var params = param_list.join("&");
 
